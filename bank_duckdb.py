@@ -116,12 +116,32 @@ def example_queries(conn):
     for tx in res_tx:
         print(tx)
 
+def get_total_balance(conn, customer_id):
+    """
+    Returns the total balance for the specified customer.
+    If the customer or their accounts are not found, returns 0.0.
+    """
+    query = """
+        SELECT SUM(a.balance) AS total_balance
+        FROM customers c
+        JOIN accounts a ON c.customer_id = a.customer_id
+        WHERE c.customer_id = ?
+    """
+    result = conn.execute(query, (customer_id,)).fetchone()
+    
+    # 'result' will be a tuple (total_balance,) or (None,) if no data is found.
+    if result and result[0] is not None:
+        return float(result[0])
+    else:
+        return 0.0
+
 
 if __name__ == "__main__":
     conn = init_db()    # Skapar/kopplar till filen 'bank_demo.duckdb'
     
     # Detta kan du köra första gången. Kommentera bort nästa gång om du inte vill duplicera data:
-    seed_data(conn)
+    #seed_data(conn)
     
     example_queries(conn)
+    print(get_total_balance(conn,5))
     conn.close()
