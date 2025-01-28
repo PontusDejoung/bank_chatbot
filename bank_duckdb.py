@@ -116,11 +116,14 @@ def example_queries(conn):
     for tx in res_tx:
         print(tx)
 
-def get_total_balance(conn, customer_id):
+def get_total_balance(customer_id, conn=None):
     """
     Returns the total balance for the specified customer.
     If the customer or their accounts are not found, returns 0.0.
     """
+    if conn == None:
+        conn = init_db()
+    
     query = """
         SELECT SUM(a.balance) AS total_balance
         FROM customers c
