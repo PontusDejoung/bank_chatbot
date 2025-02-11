@@ -74,4 +74,4 @@ docker-compose.override.yml
 *.temp
 
 llm_integration_test.py
-bank_demo.duckdb.py
+bank_demo.duckdb.py.gitignore
