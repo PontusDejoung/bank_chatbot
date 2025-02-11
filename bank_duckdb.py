@@ -2,12 +2,11 @@ import duckdb
 
 def init_db(db_path="bank_demo.duckdb"):
     """
-    Skapar en anslutning till en DuckDB-fil.
-    Om filen inte existerar skapas den automatiskt.
+    Creates a connection to a DuckDB file.
+    If the file does not exist, it will be created automatically.
     """
     conn = duckdb.connect(db_path)
     
-    # Skapa tabeller om de inte redan finns
     conn.execute("""
         CREATE TABLE IF NOT EXISTS customers (
             customer_id INTEGER,
@@ -38,16 +37,13 @@ def init_db(db_path="bank_demo.duckdb"):
         )
     """)
     
-    # Returnera anslutningen för vidare användning
     return conn
 
 
 def seed_data(conn):
     """
-    Fyll databasen med lite provdata.
+    Fills the database with some sample data.
     """
-    # Infoga kunder (UPSERT-liknande logik via 'INSERT OR IGNORE' finns inte i DuckDB per default,
-    # men i demo kan vi helt enkelt göra "INSERT" och anta att tabellen är tom.)
     conn.execute("""
         INSERT INTO customers (customer_id, name, email)
         VALUES
@@ -56,7 +52,6 @@ def seed_data(conn):
             (3, 'Cecilia Carlsson', 'cecilia@example.com')
     """)
 
-    # Infoga konton
     conn.execute("""
         INSERT INTO accounts (account_id, customer_id, account_type, balance)
         VALUES
@@ -67,7 +62,6 @@ def seed_data(conn):
             (301, 3, 'savings', 100000.00)
     """)
 
-    # Infoga transaktioner
     conn.execute("""
         INSERT INTO transactions (transaction_id, account_id, amount, transaction_type, timestamp)
         VALUES
@@ -82,16 +76,13 @@ def seed_data(conn):
 
 def example_queries(conn):
     """
-    Exempel på hur man kan läsa och använda data ur databasen.
-    Här kan du sedan koppla in chatbot/LLM-delen.
+    Examples of how to read and use data from the database.
     """
-    # 1. Hämta kunder
     print("=== Lista på kunder ===")
     results = conn.execute("SELECT * FROM customers").fetchall()
     for row in results:
         print(row)
     
-    # 2. Visa saldo för en specifik kund (Alice)
     print("\n=== Sammanlagt saldo för Alice (kund_id=1) ===")
     query_balance = """
         SELECT c.name,
@@ -104,7 +95,6 @@ def example_queries(conn):
     res_balance = conn.execute(query_balance).fetchone()
     print(f"Namn: {res_balance[0]}, Totalt saldo: {res_balance[1]}")
     
-    # 3. Visa transaktioner över 500 SEK
     print("\n=== Transaktioner större än 500 SEK ===")
     query_transactions = """
         SELECT t.transaction_id, t.account_id, t.amount, t.transaction_type, t.timestamp
@@ -131,6 +121,7 @@ def get_total_balance(customer_id, conn=None):
         WHERE c.customer_id = ?
     """
     result = conn.execute(query, (customer_id,)).fetchone()
+    conn.close()
     
     # 'result' will be a tuple (total_balance,) or (None,) if no data is found.
     if result and result[0] is not None:
@@ -140,9 +131,9 @@ def get_total_balance(customer_id, conn=None):
 
 
 if __name__ == "__main__":
-    conn = init_db()    # Skapar/kopplar till filen 'bank_demo.duckdb'
+    conn = init_db()    
     
-    # Detta kan du köra första gången. Kommentera bort nästa gång om du inte vill duplicera data:
+    # You can run this the first time. Comment it out next time if you don't want to duplicate data:
     #seed_data(conn)
     
     example_queries(conn)

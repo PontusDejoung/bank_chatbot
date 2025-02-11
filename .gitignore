@@ -1,0 +1,77 @@
+# Bytecode-filer
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtuella miljöer
+.venv/
+venv/
+ENV/
+env/
+*.venv
+
+# Loggfiler och debugging
+*.log
+debug.log
+*.out
+*.err
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python-paket och distributionsfiler
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# IDE-specifika filer
+.vscode/
+.idea/
+*.iml
+
+# PyCharm
+*.pyc
+*.pyo
+*.pyd
+
+# Konfigurationsfiler och känslig information
+.env
+.env.local
+.env.*.local
+secrets.json
+config.json
+
+# Test- och täckningsrapporter
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+.cache/
+.pytest_cache/
+nosetests.xml
+*.cover
+
+# MyPy
+.mypy_cache/
+
+# Cython
+cython_debug/
+
+# Ansible
+.ansible/
+
+# Docker-relaterade filer
+.dockerignore
+docker-compose.override.yml
+
+# Temporary files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.temp
+
+llm_integration_test.py
+bank_demo.duckdb.py
